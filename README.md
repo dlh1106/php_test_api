@@ -2,6 +2,11 @@
 
 API 테스트 방법
 
+로그인
+http://localhost/rest/web/member_login
+
+로그아웃
+http://localhost/rest/web/member_logout
 
 회원가입 
 http://localhost/rest/web/member_add
@@ -13,6 +18,7 @@ http://localhost/rest/web/member_view
 http://localhost/rest/web/member_list
 
 단일 회원 주문 목록
+http://localhost/rest/web/order_list
 
 
 /* table 생성 쿼리  */

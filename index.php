@@ -7,12 +7,11 @@
 error_reporting(0);
 ini_set("display_errors", 0);
 ini_set("session.cookie_httponly", 1);
-
-session_start();
 header("X-Frame-Options: SAMEORIGIN");
 header("X-XSS-Protection: 1");
 header('X-Content-Type-Options: nosniff');
 header('Access-Control-Allow-Methods: GET,POST,OPTIONS');
+session_start();
 
 if(isset($_SERVER['HTTP_ORIGIN'])) {
 	header("Access-Control-Allow-Origin: ".$_SERVER['HTTP_ORIGIN']);

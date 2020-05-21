@@ -9,38 +9,91 @@ class Member {
         // print_r($this->db);
     }
    
+    function chk_string(int $type, string $str){
+        $format = "";
+        $err = 0;
+        $err_msg = "";
+        switch($type){
+            case 1: //한글, 영대소문자만 포함
+            $format = "/^[가-힣a-zA-Z]+$/";
+            $err = 301;
+            $err_msg = "이름은 영문 한글, 영대소문자만 가능합니다";
+            break;
+
+            case 2:  //영소문자만 포함
+            $format = "/^[a-z+]*$/";
+            $err = 302;
+            $err_msg = "닉네임은 영문 소문자만 가능합니다";
+            break;
+
+            case 3: //비밀번호는 영문 대문자, 영문 소문자, 특수 문자, 숫자 각 1개 이상씩 포함
+            $format = "/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{10,}$/";
+            $err = 303;
+            $err_msg = "비밀번호는 영문 대문자, 영문 소문자, 특수 문자, 숫자 각 1개 이상씩 포함하세요"; 
+            break;
+
+            case 4: //휴대전화 형식
+            $format = "/^\d{3}-\d{3,4}-\d{4}$/";
+            $err = 304;
+            $err_msg = "올바른 휴대전화 형식이 아닙니다 ex)000-0000-0000";
+            break;   
+
+            case 5: //이메일 형식
+            $format = "/^[0-9A-Z]([-_\.]?[0-9A-Z])*@[0-9A-Z]([-_\.]?[0-9A-Z])*\.[A-Z]{2,20}$/i";
+            $err = 305;
+            $err_msg = "올바른 이메일 형식이 아닙니다";
+            break;   
+        }
+        $chk = preg_match($format,$str); 
+        $rtn = [];
+        if($chk==0){
+            $rtn["err"] = $err;
+            $rtn["err_msg"] = $err_msg;
+        }
+        return $rtn;
+    }
+
     // 회원 가입
-   
     function add(string $kname, string $nickname, string $upw, string $mobile, string $email, string $gender="") {
 
         $idata = [];
+        //한글, 영대소문자만 포함
+        $chk = $this->chk_string(1,$kname);
+        if($chk["err"]!=0){
+            $rtn = $chk;
+            return $rtn;
+        }
         $idata["kname"] = $kname;
+
+        //영소문자만 포함
+        $chk = $this->chk_string(2,$nickname);
+        if($chk["err"]!=0){
+            $rtn = $chk;
+            return $rtn;
+        }
         $idata["nickname"] = $nickname;
-
-        $chk = preg_match("/^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{10,}$/",$upw); //영문 대문자, 영문 소문자, 특수 문자, 숫자 각 1개 이상씩 포함
-
-        if($chk==0){
-            $rtn["err"] = 201;
-            $rtn["err_msg"] = "비밀번호는 영문 대문자, 영문 소문자, 특수 문자, 숫자 각 1개 이상씩 포함하세요";
+        //비밀번호는 영문 대문자, 영문 소문자, 특수 문자, 숫자 각 1개 이상씩 포함
+        $chk = $this->chk_string(3,$upw);
+        if($chk["err"]!=0){
+            $rtn = $chk;
             return $rtn;
         }
 
         $auth = new AUTH();
 
-        $upw = $auth->sha_pass("sha512",$upw); //암호화
+        $upw = $auth->sha_pass("sha512",$upw); //단방향암호화
         $idata["upw"] = $upw;
-        $chk = preg_match("/^\d{3}-\d{3,4}-\d{4}$/",$mobile); //휴대전화 형식
-        
-        if($chk==0){
-            $rtn["err"] = 203;
-            $rtn["err_msg"] = "올바른 휴대전화 형식이 아닙니다 ex)000-0000-0000";
+        //휴대전화 형식
+        $chk = $this->chk_string(4,$mobile);
+        if($chk["err"]!=0){
+            $rtn = $chk;
             return $rtn;
         }
         $idata["mobile"] = $mobile;
-        $chk = preg_match("/^[0-9A-Z]([-_\.]?[0-9A-Z])*@[0-9A-Z]([-_\.]?[0-9A-Z])*\.[A-Z]{2,20}$/i",$email); //이메일 형식
-        if($chk==0){
-            $rtn["err"] = 202;
-            $rtn["err_msg"] = "올바른 이메일 형식이 아닙니다";
+        //이메일 형식
+        $chk = $this->chk_string(5,$email);
+        if($chk["err"]!=0){
+            $rtn = $chk;
             return $rtn;
         }
         $idata["email"] = $email;
@@ -129,7 +182,7 @@ class Member {
                 where member_idx = :member_idx
                 order by idx desc
                 limit 1";
-
+        // only full group by 옵션이 켜진 디비에선 group by로 중복제거에 어려움이있어 쿼리 나눔
         for($i=0;$i<count($list);$i++){
             $info = $this->db->queryOne($sql, ["member_idx"=>$list[$i]["idx"]]);
             $list[$i]["order"] = $info;

@@ -2,11 +2,36 @@
 //controller
 
 function member_login(){
+    session_start();
+    $uid = "dlh1106"; //프론트에서 넘겨받는다고 가정
+    $upw = "ehgns5545";
 
+    $auth = new AUTH();
+    $res = $auth->login_chk($uid,$upw);
+    if($res["is_login"]){// 로그인 성공시
+        $info = $res["info"];
+        $_SESSION["uidx"] = $info["idx"];
+        $_SESSION["kname"] = $info["kname"];
+        $_SESSION["email"] = $info["email"];
+        echo "
+        <script>
+            location.href = '/session_test';
+        </script>
+        ";
+    }else{
+        echo "로그인 실패";
+    }
+    
 }
 
 function member_logout(){
-
+    session_start();
+    session_destroy();
+    echo "
+    <script>
+        location.href = '/session_test';
+    </script>
+    ";
 }
 
 
