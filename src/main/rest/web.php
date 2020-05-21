@@ -5,6 +5,8 @@ function member_login(){
     session_start();
     $uid = "dlh1106"; //프론트에서 넘겨받는다고 가정
     $upw = "ehgns5545";
+    // $uid = $_REQUEST["uid"]; 
+    // $upw = $_REQUEST["upw"];
 
     $auth = new AUTH();
     $res = $auth->login_chk($uid,$upw);
@@ -43,6 +45,13 @@ function member_add(){
     $mobile = "010-9843-5545";
     $email = "dlh1106@naver.com";
     $gender = "M";
+
+    // $kname = $_REQUEST["kname"]; 
+    // $nickname = $_REQUEST["nickname"];
+    // $upw = $_REQUEST["upw"];
+    // $mobile = $_REQUEST["mobile"];
+    // $email = $_REQUEST["email"];
+    // $gender = $_REQUEST["gender"];
     
     $member = new Member();
 
@@ -54,6 +63,7 @@ function member_add(){
 
 function member_view(){
     $member_idx = 2; // 프론트에서 넘겨받는다고 가정
+    // $member_idx = $_REQUEST["member_idx"];
 
     $member = new member();
 
@@ -68,6 +78,10 @@ function member_list(){
     $pagesize = 30;
     $kname = "";
     $email = "";
+    // $page = $_REQUEST["page"];
+    // $pagesize = $_REQUEST["pagesize"];
+    // $kname = $_REQUEST["kname"];
+    // $email = $_REQUEST["email"];
 
     $member = new member();
 
@@ -79,6 +93,7 @@ function member_list(){
 
 function order_list(){
     $member_idx = 3; // 프론트에서 넘겨받는다고 가정
+    // $member_idx = $_REQUEST["member_idx"];
 
     $member = new member();
 
