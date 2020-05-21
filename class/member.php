@@ -97,7 +97,7 @@ class Member {
             return $rtn;
         }
         $idata["email"] = $email;
-        $idata["gender"] = $gender;
+        $idata["gender"] = $gender=='M'?'M':'F';
         $idata["createdate"] = date("Y-m-d h:i:s");
         
         $rtn = [];

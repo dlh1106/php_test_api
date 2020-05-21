@@ -40,7 +40,7 @@ function member_logout(){
 function member_add(){
     // 프론트에서 넘겨받는다고 가정
     $kname = "이도훈"; 
-    $nickname = "dlh1107";
+    $nickname = "ehgns";
     $upw = "ehgns5545@";
     $mobile = "010-9843-5545";
     $email = "dlh1106@naver.com";
